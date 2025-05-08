@@ -1,0 +1,22 @@
+[project]
+name = "smarter"
+version = "0.1.0"
+description = "A Streamlit app for rendering of SMARTS patterns using RDKit."
+authors = [
+    {name = "Albert Anguera Sempere",email = "albert.anguera.sempere@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "streamlit (>=1.45.0,<2.0.0)",
+    "rdkit (>=2024.9.6,<2025.0.0)",
+    "pandas (>=2.2.3,<3.0.0)"
+]
+
+[tool.poetry]
+packages = [{include = "smarter", from = "src"}]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
