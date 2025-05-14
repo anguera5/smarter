@@ -1067,6 +1067,21 @@ watchdog = {version = ">=2.1.5,<7", markers = "platform_system != \"Darwin\""}
 snowflake = ["snowflake-connector-python (>=3.3.0) ; python_version < \"3.12\"", "snowflake-snowpark-python[modin] (>=1.17.0) ; python_version < \"3.12\""]
 
 [[package]]
+name = "streamlit-ketcher"
+version = "0.0.1"
+description = "Ketcher editor component for Streamlit."
+optional = false
+python-versions = ">=3.7"
+groups = ["main"]
+files = [
+    {file = "streamlit_ketcher-0.0.1-py3-none-any.whl", hash = "sha256:b8e944e06e938c0b072ed013444d68213d807e224d96f5b1d6be39658ff6233a"},
+    {file = "streamlit_ketcher-0.0.1.tar.gz", hash = "sha256:bb6201f28fc3020579c74d56bc819d1ed99af3430cf164fb964f6adbdd0e8b89"},
+]
+
+[package.dependencies]
+streamlit = ">=1.0.0"
+
+[[package]]
 name = "tenacity"
 version = "9.1.2"
 description = "Retry code until it succeeds"
@@ -1201,7 +1216,19 @@ files = [
 [package.extras]
 watchmedo = ["PyYAML (>=3.10)"]
 
+[[package]]
+name = "xlsxwriter"
+version = "3.2.3"
+description = "A Python module for creating Excel XLSX files."
+optional = false
+python-versions = ">=3.6"
+groups = ["main"]
+files = [
+    {file = "XlsxWriter-3.2.3-py3-none-any.whl", hash = "sha256:593f8296e8a91790c6d0378ab08b064f34a642b3feb787cf6738236bd0a4860d"},
+    {file = "xlsxwriter-3.2.3.tar.gz", hash = "sha256:ad6fd41bdcf1b885876b1f6b7087560aecc9ae5a9cc2ba97dcac7ab2e210d3d5"},
+]
+
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.12"
-content-hash = "b2c2110158bd950c8c611d73a907d964b2f39dcf9cafaddb2165327e95335702"
+content-hash = "533e121b2a1bdf75d7591f34f2f9122ab24d893b761d619446c3eab0cbd68847"
