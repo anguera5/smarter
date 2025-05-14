@@ -1,7 +1,9 @@
 from rdkit import Chem
 from io import BytesIO
+import streamlit as st
 import base64
 import pandas as pd
+import cirpy
 from rdkit.Chem import Draw, rdGeneralizedSubstruct
 
 def validate(smarts, as_smiles=True):
@@ -26,17 +28,18 @@ def validate(smarts, as_smiles=True):
         if mol is None:
             return False
         return mol
-    except Exception as e:
+    except Exception:
         return False
 
-def generate_output(smiles_str, pattern):
+def generate_output(input_str, pattern, input_type):
     """
-    Processes a list of SMILES strings, validates them, checks for substructure matches,
+    Processes a list of SMILES or CAS strings, in the latter case it firts transforms them. Then validates them, checks for substructure matches,
     and generates output with match results or visual representations.
 
     Args:
-        smiles_str (str): A string containing multiple SMILES strings separated by newlines.
+        input_str (str): A string containing multiple SMILES or CAS strings separated by newlines.
         pattern (str): A SMARTS pattern used for substructure matching.
+        input_type (str): Either "CAS" or "SMILES"
 
     Returns:
         tuple: A tuple containing:
@@ -47,7 +50,11 @@ def generate_output(smiles_str, pattern):
     """
     invalid_smiles = []
     output = {}
-    for smiles in smiles_str.split("\n"):
+    for smiles in input_str.split("\n"):
+        if input_type == "CAS":
+            with st.spinner(f"Transforming {smiles} to SMILES:", show_time=True):
+                smiles = cirpy.resolve(smiles, "SMILES")
+        print(repr(smiles))
         mol = validate(smiles)
         if mol:
             xqm = rdGeneralizedSubstruct.CreateExtendedQueryMol(pattern)
@@ -108,8 +115,6 @@ def export_bytes(df):
 
                 # Save temporarily to insert (xlsxwriter needs file-like)
                 worksheet.embed_image(idx + 1, 1, f'image_{idx}.png', {'image_data': image_stream, 'x_scale': 0.5, 'y_scale': 0.5})
-            except Exception as e:
+            except Exception:
                 worksheet.write(idx + 1, 1, "No match!")
-
-        writer.close()
         return output

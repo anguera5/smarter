@@ -6,9 +6,14 @@ from datetime import datetime
 
 from utils import validate, generate_output, export_bytes
 
-st.write("# Welcome to the Smarter App!")
+# Initialize session state
 if "smarts" not in st.session_state:
     st.session_state.smarts = ""
+if "compound_type" not in st.session_state:
+    st.session_state.compound_type = "SMILES"
+
+st.write("# Welcome to the Smarter App!")
+st.write("## Generate a molecular pattern")
 st.session_state.smarts = st.text_input("**Please enter your SMARTS pattern**", value=st.session_state.smarts, placeholder="SMARTS", help="Both regular [SMARTS](https://www.daylight.com/dayhtml/doc/theory/theory.smarts.html) "
 "and [ChemAxon's SMARTS](https://docs.chemaxon.com/display/docs/formats_chemaxon-extended-smiles-and-smarts-cxsmiles-and-cxsmarts.md) should work")
 
@@ -29,15 +34,22 @@ if smarts_button:
     else:
         st.error("Invalid SMARTS pattern. Please try again.")
 
-smiles_str = st.text_area("Please enter a SMILES (one SMILES per line) for which you would like to apply the pattern:", 
-                          placeholder="""c1ccccc1\nCC(C)(C1=CC=C(C=C1)O)C2=CC=C(C=C2)O\n...""")
+
+st.write("## Apply the pattern to a set of molecules")
+st.session_state.compound_type = st.radio(label="radio-input-type", options=["SMILES", "CAS"], horizontal=True, label_visibility="collapsed",
+                                          help="""Use preferrably SMILES, since CAS needs to be transformed, which results in long
+                                          computation times.""")
+
+input_placeholder = {"SMILES": "c1ccccc1\nCC(C)(C1=CC=C(C=C1)O)C2=CC=C(C=C2)O\n...", "CAS": "7732-18-5\n80-05-7\n..."}
+input_str = st.text_area(f"""**Please enter a {st.session_state.compound_type} (one {st.session_state.compound_type} per line) for 
+                         which you would like to apply the pattern:**""", 
+                         placeholder=input_placeholder[st.session_state.compound_type])
 smiles_button = st.button("Apply!", type="primary")
 if smiles_button:
     pattern = validate(st.session_state.smarts, as_smiles=False)
     if not pattern:
         st.error("Please enter a valid SMARTS pattern first.")
-
-    output, invalid_smiles = generate_output(smiles_str, pattern)
+    output, invalid_smiles = generate_output(input_str, pattern, st.session_state.compound_type)
     frame = pd.DataFrame.from_dict(output, orient="index", columns=["Molecule"])
     frame.index.name = "SMILES"
     frame.reset_index(inplace=True)
