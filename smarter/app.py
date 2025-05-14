@@ -36,9 +36,9 @@ if smarts_button:
 
 
 st.write("## Apply the pattern to a set of molecules")
-st.session_state.compound_type = st.radio(label="radio-input-type", options=["SMILES", "CAS"], horizontal=True, label_visibility="collapsed",
-                                          help="""Use preferrably SMILES, since CAS needs to be transformed, which results in long
-                                          computation times.""")
+
+st.session_state.compound_type = st.radio(label="**Choose your input type**", options=["SMILES", "CAS"], horizontal=True,
+                                          help="Use preferrably SMILES, since CAS needs to be transformed, which results in long computation times.")
 
 input_placeholder = {"SMILES": "c1ccccc1\nCC(C)(C1=CC=C(C=C1)O)C2=CC=C(C=C2)O\n...", "CAS": "7732-18-5\n80-05-7\n..."}
 input_str = st.text_area(f"""**Please enter a {st.session_state.compound_type} (one {st.session_state.compound_type} per line) for 
