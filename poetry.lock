@@ -184,6 +184,20 @@ files = [
 ]
 
 [[package]]
+name = "cirpy"
+version = "1.0.2"
+description = "Python wrapper for the NCI Chemical Identifier Resolver (CIR)."
+optional = false
+python-versions = "*"
+groups = ["main"]
+files = [
+    {file = "CIRpy-1.0.2.tar.gz", hash = "sha256:b08c1483779e1c8fa6a5da7e383138a33e8396b31f56d827a3bca7c83e689c16"},
+]
+
+[package.extras]
+lxml = ["lxml"]
+
+[[package]]
 name = "click"
 version = "8.1.8"
 description = "Composable command line interface toolkit"
@@ -1231,4 +1245,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.12"
-content-hash = "533e121b2a1bdf75d7591f34f2f9122ab24d893b761d619446c3eab0cbd68847"
+content-hash = "f5c4b8a4427fc28b100bba9a4240da04c2b78fb600d6888d4ed42d80d673b9e9"

@@ -12,7 +12,8 @@ dependencies = [
     "rdkit (>=2024.9.6,<2025.0.0)",
     "pandas (>=2.2.3,<3.0.0)",
     "streamlit-ketcher (>=0.0.1,<0.0.2)",
-    "xlsxwriter (>=3.2.3,<4.0.0)"
+    "xlsxwriter (>=3.2.3,<4.0.0)",
+    "cirpy (>=1.0.2,<2.0.0)"
 ]
 
 [tool.poetry]
