@@ -12,6 +12,22 @@ if "smarts" not in st.session_state:
 if "compound_type" not in st.session_state:
     st.session_state.compound_type = "SMILES"
 
+# Set configuration of the page
+st.set_page_config(
+    page_title="Smarter",
+    page_icon="🪄",
+    initial_sidebar_state="expanded",
+    menu_items={
+        'Get Help': 'mailto:albert.anguera.sempere@gmail.com',
+        'Report a bug': "https://github.com/anguera5/smarter/issues/new",
+        'About': "**Smarter** is an interactive Streamlit web application designed to **simplify** the process of working with "
+        "molecular substructure patterns. \n\nSmarter enables users to **input or draw SMARTS** patterns, "
+        "validate them, and **apply them to lists of molecules** provided as SMILES or CAS numbers. The app **highlights substructure matches**, "
+        "supports batch processing, and allows users to **export results to Excel**. "
+        "\n\nSmarter is **ideal for chemists, researchers, and educators** who need a user-friendly tool for molecular pattern recognition and visualization."
+    }
+)
+
 st.write("# Welcome to the Smarter App!")
 st.write("## Generate a molecular pattern")
 st.session_state.smarts = st.text_input("**Please enter your SMARTS pattern**", value=st.session_state.smarts, placeholder="SMARTS", help="Both regular [SMARTS](https://www.daylight.com/dayhtml/doc/theory/theory.smarts.html) "
