@@ -72,6 +72,7 @@ if smiles_button:
     config = {
         "Molecule": st.column_config.ImageColumn(),
     }
+    st.info(f"{frame[frame["Molecule"] != "No match"].shape[0]} out of {frame.shape[0]} matches the pattern")
     table = st.dataframe(frame, column_config=config, row_height=150)
     filename = f"smarter_pattern_result_{datetime.now().strftime("%Y_%m_%d_%H_%M_%S")}.xlsx"
     download_file = export_bytes(frame)
