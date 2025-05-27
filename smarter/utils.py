@@ -51,6 +51,8 @@ def generate_output(input_str, pattern, input_type):
     invalid_smiles = []
     output = {}
     for smiles in input_str.split("\n"):
+        if smiles == "":
+            continue
         if input_type == "CAS":
             with st.spinner(f"Transforming {smiles} to SMILES:", show_time=True):
                 smiles = cirpy.resolve(smiles, "SMILES")
