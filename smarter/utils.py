@@ -70,8 +70,17 @@ def generate_output(input_str: str, add_hs: bool, pattern: str, input_type:str) 
         if not matches:
             output[smiles] = "No match"
             continue
-        matches = sum(matches, ())
-        img = Draw.MolToImage(mol, highlightAtoms=matches)
+
+        matched_atoms = set()
+        matched_bonds = set()
+        for match in matches:
+            for i in range(len(match)):
+                matched_atoms.add(match[i])
+                for j in range(i+1, len(match)):
+                    bond = mol.GetBondBetweenAtoms(match[i], match[j])
+                    if bond:
+                        matched_bonds.add(bond.GetIdx())
+        img = Draw.MolToImage(mol, highlightAtoms=matched_atoms, highlightBonds=matched_bonds)
         bio = BytesIO()
         img.save(bio, format="PNG")
         img_bytes = bio.getvalue()
