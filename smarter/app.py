@@ -60,12 +60,20 @@ input_placeholder = {"SMILES": "c1ccccc1\nCC(C)(C1=CC=C(C=C1)O)C2=CC=C(C=C2)O\n.
 input_str = st.text_area(f"""**Please enter a {st.session_state.compound_type} (one {st.session_state.compound_type} per line) for 
                          which you would like to apply the pattern:**""", 
                          placeholder=input_placeholder[st.session_state.compound_type])
-smiles_button = st.button("Apply!", type="primary")
+
+
+col1, col2 = st.columns([1,6], gap="small") 
+
+with col1:
+    smiles_button = st.button("Apply!", type="primary")
+with col2:
+    add_hs = st.checkbox("Add explicit hydrogens", help="""In SMILES hydrogens are implicit, when you want to match a pattern where hydrogens are explicit \n\n(e.g. ```C-[H,Cl]```), you need to add them to the molecules.""")
+
 if smiles_button:
     pattern = validate(st.session_state.smarts, as_smiles=False)
     if not pattern:
         st.error("Please enter a valid SMARTS pattern first.")
-    output, invalid_smiles = generate_output(input_str, pattern, st.session_state.compound_type)
+    output, invalid_smiles = generate_output(input_str, add_hs, pattern, st.session_state.compound_type)
     frame = pd.DataFrame.from_dict(output, orient="index", columns=["Molecule"])
     frame.index.name = "SMILES"
     frame.reset_index(inplace=True)

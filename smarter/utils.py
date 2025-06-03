@@ -31,13 +31,14 @@ def validate(smarts, as_smiles=True):
     except Exception:
         return False
 
-def generate_output(input_str, pattern, input_type):
+def generate_output(input_str: str, add_hs: bool, pattern: str, input_type:str) -> tuple:
     """
     Processes a list of SMILES or CAS strings, in the latter case it firts transforms them. Then validates them, checks for substructure matches,
     and generates output with match results or visual representations.
 
     Args:
         input_str (str): A string containing multiple SMILES or CAS strings separated by newlines.
+        add_hs (bool): If True, adds explicit hydrogens to the molecules before matching.
         pattern (str): A SMARTS pattern used for substructure matching.
         input_type (str): Either "CAS" or "SMILES"
 
@@ -56,22 +57,26 @@ def generate_output(input_str, pattern, input_type):
         if input_type == "CAS":
             with st.spinner(f"Transforming {smiles} to SMILES:", show_time=True):
                 smiles = cirpy.resolve(smiles, "SMILES")
-        print(repr(smiles))
         mol = validate(smiles)
-        if mol:
-            xqm = rdGeneralizedSubstruct.CreateExtendedQueryMol(pattern)
-            if not rdGeneralizedSubstruct.MolHasSubstructMatch(mol, xqm):
-                output[smiles] = "No match"
-            else:
-                matches = rdGeneralizedSubstruct.MolGetSubstructMatches(mol, xqm)
-                img = Draw.MolToImage(mol, highlightAtoms=matches[0])
-                bio = BytesIO()
-                img.save(bio, format="PNG")
-                img_bytes = bio.getvalue()
-                base64_str = base64.b64encode(img_bytes).decode("utf-8")
-                output[smiles] = f"data:image/png;base64,{base64_str}"
-        else:
+        if not mol:
             invalid_smiles.append(smiles)
+            continue
+        print(repr(add_hs))
+        if add_hs:
+            mol = Chem.AddHs(mol)
+        print(repr(smiles))
+        xqm = rdGeneralizedSubstruct.CreateExtendedQueryMol(pattern)
+        matches = rdGeneralizedSubstruct.MolGetSubstructMatches(mol, xqm)
+        if not matches:
+            output[smiles] = "No match"
+            continue
+        matches = sum(matches, ())
+        img = Draw.MolToImage(mol, highlightAtoms=matches)
+        bio = BytesIO()
+        img.save(bio, format="PNG")
+        img_bytes = bio.getvalue()
+        base64_str = base64.b64encode(img_bytes).decode("utf-8")
+        output[smiles] = f"data:image/png;base64,{base64_str}"
     return output, invalid_smiles
     
 def export_bytes(df):
