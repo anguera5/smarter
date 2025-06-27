@@ -51,6 +51,7 @@ def generate_output(input_str: str, add_hs: bool, pattern: str, input_type:str) 
     """
     invalid_smiles = []
     output = {}
+    print(pattern)
     for smiles in input_str.split("\n"):
         if smiles == "":
             continue
@@ -61,12 +62,11 @@ def generate_output(input_str: str, add_hs: bool, pattern: str, input_type:str) 
         if not mol:
             invalid_smiles.append(smiles)
             continue
-        print(repr(add_hs))
         if add_hs:
             mol = Chem.AddHs(mol)
-        print(repr(smiles))
-        xqm = rdGeneralizedSubstruct.CreateExtendedQueryMol(pattern)
+        xqm = rdGeneralizedSubstruct.CreateExtendedQueryMol(pattern, doTautomers=False)
         matches = rdGeneralizedSubstruct.MolGetSubstructMatches(mol, xqm)
+        print(repr(matches))
         if not matches:
             output[smiles] = "No match"
             continue
