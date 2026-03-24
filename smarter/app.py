@@ -86,6 +86,7 @@ if smiles_button:
     download_file = export_bytes(frame)
     
     if invalid_smiles:
-        st.error(f"The following SMILES returned an error: {invalid_smiles}.")
+        label = "CAS entries" if st.session_state.compound_type == "CAS" else "SMILES"
+        st.error(f"The following {label} returned an error: {', '.join(map(str, invalid_smiles))}.")
     if table:
         st.download_button("Download Excel", download_file, filename, icon=":material/download:", mime="application/vnd.ms-excel")

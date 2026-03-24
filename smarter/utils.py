@@ -47,20 +47,26 @@ def generate_output(input_str: str, add_hs: bool, pattern: str, input_type:str) 
             - output (dict): A dictionary where keys are valid SMILES strings and values are either:
                 - "No match" if the substructure pattern is not found.
                 - A base64-encoded PNG image string of the molecule with the matched substructure highlighted.
-            - invalid_smiles (list): A list of SMILES strings that are invalid.
+            - invalid_identifiers (list): A list of identifiers (SMILES or CAS) that are invalid.
     """
-    invalid_smiles = []
+    invalid_identifiers = []
     output = {}
-    print(pattern)
-    for smiles in input_str.split("\n"):
-        if smiles == "":
+    for raw_input in input_str.split("\n"):
+        identifier = raw_input.strip()
+        if identifier == "":
             continue
         if input_type == "CAS":
-            with st.spinner(f"Transforming {smiles} to SMILES:", show_time=True):
-                smiles = cirpy.resolve(smiles, "SMILES")
+            with st.spinner(f"Transforming {identifier} to SMILES:", show_time=True):
+                smiles = cirpy.resolve(identifier, "SMILES")
+            if not smiles:
+                invalid_identifiers.append(identifier)
+                continue
+        else:
+            smiles = identifier
         mol = validate(smiles)
         if not mol:
-            invalid_smiles.append(smiles)
+            # Keep the original CAS entry in error reporting when conversion succeeds but parsing fails.
+            invalid_identifiers.append(identifier if input_type == "CAS" else smiles)
             continue
         if add_hs:
             mol = Chem.AddHs(mol)
@@ -86,7 +92,7 @@ def generate_output(input_str: str, add_hs: bool, pattern: str, input_type:str) 
         img_bytes = bio.getvalue()
         base64_str = base64.b64encode(img_bytes).decode("utf-8")
         output[smiles] = f"data:image/png;base64,{base64_str}"
-    return output, invalid_smiles
+    return output, invalid_identifiers
     
 def export_bytes(df):
     """
