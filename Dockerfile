@@ -22,5 +22,5 @@ EXPOSE 8501
 # Streamlit-specific settings: disable the browser auto-open and CORS for server use
 ENTRYPOINT ["streamlit", "run", "smarter/app.py", \
     "--server.port=8501", \
-    "--server.address=127.0.0.1", \
+    "--server.address=0.0.0.0", \
     "--server.headless=true"]
